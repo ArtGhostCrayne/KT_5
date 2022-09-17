@@ -7,7 +7,7 @@ class WallServiceTest {
 
     @Test
     fun add() {
-        val post = Post(id = WallService.lastID + 1, likes = Likes())
+        val post = Post(id = WallService.lastID + 1, comments = Comments(), copyright = Copyright(), likes = Likes())
         WallService.add(post)
         assertTrue(WallService.lastID > 0)
     }
@@ -19,19 +19,61 @@ class WallServiceTest {
 
     @Test
     fun updateExists() {
-        WallService.add(Post(id = WallService.lastID + 1, likes = Likes()))
-        WallService.add(Post(id = WallService.lastID + 1, likes = Likes()))
-        WallService.add(Post(id = WallService.lastID + 1, likes = Likes()))
-        val post = Post(2, likes = Likes())
+        WallService.add(
+            Post(
+                id = WallService.lastID + 1,
+                comments = Comments(),
+                copyright = Copyright(),
+                likes = Likes()
+            )
+        )
+        val post = WallService.add(
+            Post(
+                id = WallService.lastID + 1,
+                comments = Comments(),
+                copyright = Copyright(),
+                likes = Likes()
+            )
+        )
+        WallService.add(
+            Post(
+                id = WallService.lastID + 1,
+                comments = Comments(),
+                copyright = Copyright(),
+                likes = Likes()
+            )
+        )
+
         assertTrue(WallService.update(post))
     }
 
     @Test
     fun updateNotExists() {
-        WallService.add(Post(id = WallService.lastID + 1, likes = Likes()))
-        WallService.add(Post(id = WallService.lastID + 1, likes = Likes()))
-        WallService.add(Post(id = WallService.lastID + 1, likes = Likes()))
-        val post = Post(4, likes = Likes())
+        WallService.add(
+            Post(
+                id = WallService.lastID + 1,
+                comments = Comments(),
+                copyright = Copyright(),
+                likes = Likes()
+            )
+        )
+        WallService.add(
+            Post(
+                id = WallService.lastID + 1,
+                comments = Comments(),
+                copyright = Copyright(),
+                likes = Likes()
+            )
+        )
+        WallService.add(
+            Post(
+                id = WallService.lastID + 1,
+                comments = Comments(),
+                copyright = Copyright(),
+                likes = Likes()
+            )
+        )
+        val post = Post(4, comments = Comments(), copyright = Copyright(), likes = Likes())
         assertFalse(WallService.update(post))
     }
 }
