@@ -57,7 +57,8 @@ data class Post(
     val markedAsAds: Boolean = false,
     val isFavorite: Boolean = false,
     val donut: Donut? = null,
-    val postponed_id: Int = 0
+    val postponed_id: Int = 0,
+    val attachments: Array<Attachment> = emptyArray()
 )
 
 data class Repost(val count: Int = 0, val userReposted: Boolean = false)
@@ -98,15 +99,90 @@ data class Likes(
 )
 
 
-fun main() {
-    val post = WallService.add(
-        Post(
-            id = WallService.lastID + 1,
-            comments = Comments(),
-            copyright = Copyright(),
-            likes = Likes()
-        )
-    )
+abstract class Attachment(val type: String)
 
-    println(post)
+data class Audio(
+    val id: Int,
+    val ownerId: Int,
+    val artist: String,
+    val title: String,
+    val duration: Int,
+    val url: String,
+    val lyricsId: Int,
+    val albumId: Int,
+    val genreId: Int,
+    val date: Long = System.currentTimeMillis() / 1000,
+    val noSearch: Boolean = false,
+    val isHQ: Boolean = false
+)
+
+data class Photo(
+    val id: Int,
+    val ownerId: Int,
+    val albumId: Int,
+    val text: String,
+    val url: String,
+    val userId: Int,
+    val date: Long = System.currentTimeMillis() / 1000,
+    val sizes: Array<Images> = emptyArray(),
+    val width: Int,
+    val height: Int
+)
+
+data class Album(
+    val id: Int,
+    val ownerId: Int,
+    val thumb: Photo,
+    val title: String,
+    val description: String,
+    val userId: Int,
+    val created: Long = System.currentTimeMillis() / 1000,
+    val updated: Long = System.currentTimeMillis() / 1000,
+    val size: Int = 0
+)
+
+data class Link(
+    val url: String,
+    val title: String,
+    val caption: String,
+    val description: String,
+    var image: Photo? = null,
+    var product: Product? = null,
+    var button: Button? = null,
+    val previewPage: String,
+    val previewUrl: String
+)
+
+data class Video(
+    val id: Int,
+    val ownerId: Int,
+    val description: String,
+    val title: String,
+    val duration: Int,
+    var image: Array<VideoImage> = emptyArray(),
+    val date: Long = System.currentTimeMillis() / 1000,
+    val addingDate: Long = System.currentTimeMillis() / 1000,
+    val views: Int = 0,
+    val local_views: Int = 0,
+    val comments: Int = 0,
+    val player: String
+)
+
+data class VideoImage(val height: Int, val width: Int, val url: String, val withPadding: Boolean = true)
+data class Images(val type: String, val height: Int, val width: Int, val url: String)
+data class Product(val price: Price)
+data class Price(val amount : Int, val currency: Currency, val text: String)
+data class Currency(val id: Int, val name: String)
+data class Button(val action: Action, val title: String)
+data class Action(val url: String, val title: String)
+
+data class AudioAttachment(val audio: Audio) : Attachment("Audio")
+data class VideoAttachment(val video: Video) : Attachment("Video")
+data class PhotoAttachment(val photo: Photo) : Attachment("Photo")
+data class LinkAttachment(val link: Link) : Attachment("Link")
+data class AlbumAttachment(val album: Album) : Attachment("Album")
+
+
+fun main() {
+
 }
