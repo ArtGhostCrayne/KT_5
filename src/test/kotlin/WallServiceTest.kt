@@ -7,7 +7,14 @@ class WallServiceTest {
 
     @Test
     fun add() {
-        val post = Post(id = WallService.lastID + 1, comments = Comments(), copyright = Copyright(), likes = Likes())
+        val post = WallService.add(
+            Post(
+                id = WallService.lastID + 1,
+                comments = Comments(),
+                copyright = Copyright(),
+                likes = Likes()
+            )
+        )
         WallService.add(post)
         assertTrue(WallService.lastID > 0)
     }
@@ -44,6 +51,7 @@ class WallServiceTest {
             )
         )
 
+
         assertTrue(WallService.update(post))
     }
 
@@ -62,7 +70,7 @@ class WallServiceTest {
                 id = WallService.lastID + 1,
                 comments = Comments(),
                 copyright = Copyright(),
-                likes = Likes()
+                likes = Likes(),
             )
         )
         WallService.add(
@@ -73,7 +81,12 @@ class WallServiceTest {
                 likes = Likes()
             )
         )
-        val post = Post(4, comments = Comments(), copyright = Copyright(), likes = Likes())
+        val post = Post(
+            4,
+            comments = Comments(),
+            copyright = Copyright(),
+            likes = Likes(),
+        )
         assertFalse(WallService.update(post))
     }
 }

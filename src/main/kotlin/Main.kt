@@ -14,21 +14,11 @@ object WallService {
 
             if (post1.id == post.id) {
                 lastID += 1
+
                 posts[index] = post.copy(
                     id = lastID,
-                    ownerId = 100,
-                    createdBy = 2,
-                    text = "изменено",
-                    friendsOnly = false,
-                    comments = Comments(
-                        count = 1,
-                        canPost = false,
-                        groupsCanPost = false,
-                        can_close = false,
-                        can_open = false
-                    ),
-                    copyright = Copyright(1, "-", "-", "-"),
-                    likes = Likes(count = 1, userLike = false, canLike = true, canPublish = true)
+                    ownerId = post1.ownerId,
+                    date = post1.date
                 )
                 res = true
             }
@@ -51,12 +41,39 @@ data class Post(
     val replyOwnerId: Int = 0,
     val replyPostId: Int = 0,
     val friendsOnly: Boolean = true,
-    val comments: Comments,
-    val copyright: Copyright,
-    val likes: Likes
-) {
+    val comments: Comments? = null,
+    val copyright: Copyright? = null,
+    val likes: Likes,
+    val repost: Repost? = null,
+    val view: View? = null,
+    val postType: String = "",
+    val postSource: Postsource? = null,
+    val geo: Geo? = null,
+    val signerId: Int = 0,
+    val canPin: Boolean = false,
+    val canDelete: Boolean = false,
+    val canEdit: Boolean = false,
+    val isPinned: Boolean = false,
+    val markedAsAds: Boolean = false,
+    val isFavorite: Boolean = false,
+    val donut: Donut? = null,
+    val postponed_id: Int = 0
+)
 
-}
+data class Repost(val count: Int = 0, val userReposted: Boolean = false)
+
+data class View(val count: Int = 0)
+
+class Postsource()
+
+data class Geo(val type: String = "", val coordinates: String = "")
+
+data class Donut(
+    val isDonut: Boolean = false,
+    val paidDuration: Int = 100,
+    val canPublishFreeCopy: Boolean = false,
+    val editMode: String = "All"
+)
 
 data class Comments(
     val count: Int = 0,
@@ -82,8 +99,6 @@ data class Likes(
 
 
 fun main() {
-    WallService.add(Post(id = WallService.lastID + 1, comments = Comments(), copyright = Copyright(), likes = Likes()))
-    WallService.add(Post(id = WallService.lastID + 1, comments = Comments(), copyright = Copyright(), likes = Likes()))
     val post = WallService.add(
         Post(
             id = WallService.lastID + 1,
@@ -93,7 +108,5 @@ fun main() {
         )
     )
 
-    println(WallService.posts[2])
-    WallService.update(post)
-    println(WallService.posts[2])
+    println(post)
 }
