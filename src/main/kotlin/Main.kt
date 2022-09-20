@@ -1,11 +1,47 @@
+import java.lang.RuntimeException
+
+data class ReportComments(val id: Int, val commentId: Int, val reason: Int)
+
 object WallService {
     var posts = emptyArray<Post>()
+    private var comments = emptyArray<Comment>()
+    private var reportComment = emptyArray<ReportComments>()
     var lastID = 0;
+
+    fun findCommentByID(commentId: Int): Comment? {
+        for (comm in comments) {
+            if (comm.id == commentId) {
+                return comm
+            }
+        }
+        return null
+    }
+    fun reportComment(commentId: Int, reason: Int): Boolean{
+        if (reason<1 || reason>9) throw ReasonNotFoundException("Reason not correct")
+        val comm = findCommentByID(commentId)
+        reportComment+=ReportComments(1, comm?.id ?: throw CommentNotFoundException("Comment not found"), reason)
+        return true
+    }
 
     fun add(post: Post): Post {
         posts += post
         lastID += 1
         return posts.last()
+    }
+
+     fun findPostByID(postId: Int): Post? {
+        for (post in posts) {
+            if (post.id == postId) {
+                return post
+            }
+        }
+        return null
+    }
+
+    fun createComment(postId: Int, comment: Comment): Comment {
+        val id = findPostByID(postId)?.id ?: throw PostNotFoundException("Post not found")
+        comments+=comment
+        return comments.last()
     }
 
     fun update(post: Post): Boolean {
@@ -30,6 +66,19 @@ object WallService {
         posts = emptyArray()
     }
 }
+
+data class Comment(
+    val id: Int,
+    val fromId: Int,
+    val date: Long = System.currentTimeMillis() / 1000,
+    val text: String,
+    val donut: Donut? = null,
+    val replyToUser: Int = 0,
+    val replyToComment: Int = 0,
+    val attachment: Attachment? = null,
+    val parentsStack: Array<Int> = emptyArray(),
+//    val thread: Thread? = null
+)
 
 data class Post(
     val id: Int = 1,
@@ -171,7 +220,7 @@ data class Video(
 data class VideoImage(val height: Int, val width: Int, val url: String, val withPadding: Boolean = true)
 data class Images(val type: String, val height: Int, val width: Int, val url: String)
 data class Product(val price: Price)
-data class Price(val amount : Int, val currency: Currency, val text: String)
+data class Price(val amount: Int, val currency: Currency, val text: String)
 data class Currency(val id: Int, val name: String)
 data class Button(val action: Action, val title: String)
 data class Action(val url: String, val title: String)
@@ -182,7 +231,21 @@ data class PhotoAttachment(val photo: Photo) : Attachment("Photo")
 data class LinkAttachment(val link: Link) : Attachment("Link")
 data class AlbumAttachment(val album: Album) : Attachment("Album")
 
+class PostNotFoundException(errMessage:String): RuntimeException(errMessage)
+
+class CommentNotFoundException(errMessage:String): RuntimeException(errMessage)
+class ReasonNotFoundException(errMessage:String): RuntimeException(errMessage)
 
 fun main() {
+
+//    val serv = WallService
+//    serv.add(
+//        Post(
+//            id = WallService.lastID + 1,
+//            likes = Likes()
+//        )
+//    )
+//    val post = serv.createComment(1, comment = Comment(1,1, text = "Hello world"))
+//    serv.reportComment(2,1)
 
 }
